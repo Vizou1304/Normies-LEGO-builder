@@ -242,6 +242,7 @@ body{
     <div class="tag">TURN YOUR NORMIE INTO A LEGO BUILD</div>
     <div class="tright">
       <button class="hbtn outline" onclick="downloadPDF()">↓ PDF</button>
+
     </div>
   </div>
 
@@ -491,7 +492,25 @@ function renderUI(id,traits,pieces,summary,planCv,darkPx){
         <div id="inv-grid"></div>
       </div>
 
-
+      <!-- BrickLink -->
+      <div class="inv-card">
+        <div class="inv-header">
+          <div class="inv-title">⬡ BRICKLINK WANTED LIST</div>
+        </div>
+        <div style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:8px;letter-spacing:.12em;color:var(--dim);line-height:1.9;">
+            1. CLIQUE SUR COPIER<br>
+            2. VA SUR <b style="color:var(--text)">BRICKLINK.COM → WANTED LIST → UPLOAD</b><br>
+            3. ONGLET "UPLOAD BRICKLINK XML FORMAT" → COLLE → DONE
+          </div>
+          <button onclick="exportBrickLink(this)" style="
+            background:var(--on);border:none;color:var(--bg);
+            font-family:'''Share Tech Mono''',monospace;font-size:10px;
+            padding:12px;cursor:pointer;letter-spacing:.2em;
+            transition:background .15s;width:100%;
+          ">⬡ COPIER LE XML BRICKLINK</button>
+        </div>
+      </div>
 
     </div>
   </div>`;
@@ -584,6 +603,46 @@ function downloadPDF(){
     pdf.save(`normie-${String(curId).padStart(4,'0')}-plan.pdf`);
   };
   document.head.appendChild(script);
+}
+
+// ── Export BrickLink Wanted List XML ──
+function exportBrickLink(btn){
+  if(!curSummary||curId===null){return;}
+
+  // BrickLink color IDs: Dark Bluish Gray=85, Light Bluish Gray=86
+  const BL_COLOR={dark:85,light:86};
+  const BL_PART={'1x1':'3024','1x2':'3023','2x1':'3023','1x3':'3623','3x1':'3623','1x4':'3710','4x1':'3710','2x2':'3022','2x3':'3021','3x2':'3021','2x4':'3020','4x2':'3020'};
+
+  // Merge par couleur + part id
+  const merged={};
+  for(const g of curSummary){
+    const pid=BL_PART[g.lbl]||null;
+    if(!pid) continue;
+    const k=`${g.c.key}|${pid}`;
+    if(!merged[k]) merged[k]={pid,colorId:BL_COLOR[g.c.key],count:0};
+    merged[k].count+=g.count;
+  }
+
+  let xml=`<INVENTORY>\n`;
+  for(const m of Object.values(merged)){
+    xml+=`  <ITEM>\n`;
+    xml+=`    <ITEMTYPE>P</ITEMTYPE>\n`;
+    xml+=`    <ITEMID>${m.pid}</ITEMID>\n`;
+    xml+=`    <COLOR>${m.colorId}</COLOR>\n`;
+    xml+=`    <MINQTY>${m.count}</MINQTY>\n`;
+    xml+=`    <CONDITION>N</CONDITION>\n`;
+    xml+=`  </ITEM>\n`;
+  }
+  xml+=`</INVENTORY>`;
+
+  navigator.clipboard.writeText(xml).then(()=>{
+    const b=btn||document.querySelector('.hbtn[onclick="exportBrickLink()"]');
+    if(!b) return;
+    const orig=b.textContent;
+    b.textContent='✓ COPIÉ — COLLE SUR BRICKLINK !';
+    b.style.background='#2a7a2a';
+    setTimeout(()=>{b.textContent=orig;b.style.background='var(--on)';},3000);
+  });
 }
 
 // ── Utils ──
