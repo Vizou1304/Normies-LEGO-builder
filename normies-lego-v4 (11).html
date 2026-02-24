@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NORMIES // LEGO BUILDER</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#e3e5e4;
+  --card:#ffffff;
+  --border:#c8cacb;
+  --on:#48494b;
+  --text:#1a1c1c;
+  --dim:#8a8c8c;
+  --mid:#4a4c4c;
+  --normie-dark:#48494b;
+  --normie-light:#e3e5e4;
+  --accent:#E3000B;
+}
+
+body{
+  background:var(--bg);
+  font-family:'Share Tech Mono',monospace;
+  color:var(--text);
+  min-height:100vh;
+}
+
+.page{max-width:1100px;margin:0 auto;padding:0 16px 80px;}
+
+/* ── HEADER ── */
+#topbar{
+  height:52px;display:flex;align-items:center;gap:14px;
+  border-bottom:2px solid var(--on);margin-bottom:24px;
+  flex-wrap:wrap;
+}
+.logo{font-size:12px;letter-spacing:.3em;color:var(--on);}
+.tsep{width:1px;height:16px;background:var(--border);flex-shrink:0;}
+.tag{font-size:8px;letter-spacing:.16em;color:var(--dim);}
+.tright{margin-left:auto;display:flex;gap:8px;}
+.hbtn{
+  background:var(--on);border:none;
+  color:var(--bg);font-family:'Share Tech Mono',monospace;font-size:9px;
+  padding:8px 16px;cursor:pointer;letter-spacing:.18em;transition:background .15s;
+}
+.hbtn:hover{background:var(--mid);}
+.hbtn.outline{background:transparent;border:1.5px solid var(--on);color:var(--on);}
+.hbtn.outline:hover{background:rgba(0,0,0,.06);}
+
+/* ── INPUT ── */
+#input-bar{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:14px 16px;background:var(--card);border:1.5px solid var(--border);
+  margin-bottom:20px;
+}
+.ib-l{font-size:9px;letter-spacing:.2em;color:var(--dim);}
+#nft-input{
+  background:#f0f2f1;border:1.5px solid var(--border);
+  color:var(--text);font-family:'Share Tech Mono',monospace;font-size:20px;
+  padding:7px 14px;outline:none;width:130px;text-align:center;letter-spacing:.1em;
+}
+#nft-input:focus{border-color:var(--on);}
+#build-btn{
+  background:var(--accent);border:none;color:#fff;
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  padding:10px 24px;cursor:pointer;letter-spacing:.2em;transition:background .15s;
+}
+#build-btn:hover{background:#c00008;}
+#st{font-size:8px;letter-spacing:.12em;color:var(--dim);}
+
+/* ── MAIN LAYOUT ── */
+.layout{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start;}
+
+/* ── PLAN CARD ── */
+.plan-card{background:var(--card);border:1.5px solid var(--border);}
+.plan-header{
+  padding:12px 16px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.plan-title{font-size:9px;letter-spacing:.24em;color:var(--mid);}
+.plan-hint{font-size:8px;letter-spacing:.12em;color:var(--dim);}
+
+#plan-wrap{
+  padding:12px;
+  overflow:auto;
+  background:#f8f9f9;
+  max-height:80vh;
+}
+#plan-canvas{
+  display:block;
+  image-rendering:pixelated;
+  cursor:zoom-in;
+  transform-origin:top left;
+  transition:transform .2s;
+}
+
+/* ── SIDE ── */
+.side{display:flex;flex-direction:column;gap:14px;}
+
+/* Normie card */
+.normie-card{
+  background:var(--card);border:1.5px solid var(--border);
+  padding:14px;
+  display:flex;gap:12px;align-items:center;
+}
+#preview-img{
+  width:80px;height:80px;image-rendering:pixelated;
+  border:1.5px solid var(--border);background:var(--bg);
+  display:block;object-fit:cover;flex-shrink:0;
+}
+.nc-info{display:flex;flex-direction:column;gap:4px;}
+.nc-id{font-size:16px;letter-spacing:.06em;color:var(--on);}
+.nc-row{font-size:8px;letter-spacing:.1em;color:var(--dim);}
+.nc-row b{color:var(--text);}
+
+/* Stats row */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);
+  border:1.5px solid var(--border);
+}
+.sc{background:var(--card);padding:10px 6px;text-align:center;}
+.sc-l{font-size:7px;letter-spacing:.16em;color:var(--dim);margin-bottom:4px;}
+.sc-v{font-size:20px;color:var(--on);}
+.sc-s{font-size:7px;letter-spacing:.1em;color:var(--dim);margin-top:1px;}
+
+/* ── INVENTORY ── */
+.inv-card{background:var(--card);border:1.5px solid var(--border);}
+.inv-header{
+  padding:12px 16px;border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.inv-title{font-size:9px;letter-spacing:.24em;color:var(--mid);}
+.inv-total{font-size:9px;letter-spacing:.12em;color:var(--dim);}
+
+#inv-grid{
+  padding:12px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.inv-item{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:8px 4px;
+  border:1px solid var(--border);
+  background:#f8f9f9;
+  transition:background .1s;
+}
+.inv-item:hover{background:#f0f2f1;}
+.inv-lbl{font-size:8px;letter-spacing:.1em;color:var(--mid);text-align:center;}
+.inv-lbl b{color:var(--text);}
+.inv-qty{
+  font-size:14px;letter-spacing:.04em;color:var(--on);
+  background:var(--bg);
+  width:34px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);
+  border-radius:50%;
+}
+
+/* BrickLink section */
+.bl-card{background:var(--card);border:1.5px solid var(--border);}
+.bl-header{padding:12px 16px;border-bottom:1.5px solid var(--border);}
+.bl-title{font-size:9px;letter-spacing:.24em;color:var(--mid);}
+.bl-note{padding:8px 14px;font-size:7px;letter-spacing:.12em;color:var(--dim);border-bottom:1px solid var(--border);line-height:1.8;background:#f8f9f9;}
+
+.bl-row{
+  display:flex;
+  align-items:center;justify-content:space-between;
+  padding:7px 14px;
+  border-bottom:1px solid #f0f2f1;
+}
+.bl-row:last-child{border-bottom:none;}
+.bl-part{color:var(--text);font-size:8px;letter-spacing:.1em;display:flex;align-items:center;gap:6px;}
+.bl-qty2{color:var(--mid);font-size:10px;font-weight:bold;}
+
+/* ── EMPTY ── */
+#empty{
+  background:var(--card);border:1.5px solid var(--border);
+  padding:60px 24px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+}
+.em-icon{font-size:40px;}
+.em-t{font-size:15px;letter-spacing:.2em;color:var(--on);}
+.em-s{font-size:9px;letter-spacing:.14em;color:var(--dim);line-height:2;}
+
+/* ── LOADER ── */
+#loader{
+  position:fixed;inset:0;z-index:200;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  transition:opacity .3s;
+}
+.l-t{font-size:11px;letter-spacing:.3em;color:var(--on);}
+.l-m{font-size:9px;letter-spacing:.14em;color:var(--dim);}
+.l-bg{width:200px;height:3px;background:var(--border);}
+.l-f{height:100%;background:var(--on);transition:width .25s;width:0%;}
+
+/* ── MOBILE ── */
+@media(max-width:720px){
+  .layout{grid-template-columns:1fr;}
+  /* On mobile, plan goes below side info */
+  .layout .plan-card{order:2;}
+  .layout .side{order:1;}
+  .stats-row{grid-template-columns:repeat(4,1fr);}
+  #inv-grid{grid-template-columns:repeat(3,1fr);}
+  #plan-canvas{max-width:100%;height:auto;}
+  .tag{display:none;}
+  .logo{font-size:10px;}
+}
+
+@media(max-width:420px){
+  #inv-grid{grid-template-columns:repeat(2,1fr);}
+  .sc-v{font-size:16px;}
+}
+
+/* ── PRINT ── */
+@media print{
+  #topbar,#input-bar,#loader,.hbtn,.plan-hint{display:none!important;}
+  body{background:#fff;}
+  .plan-card,.side,.normie-card,.stats-row,.inv-card,.bl-card{border-color:#ccc!important;}
+  .layout{grid-template-columns:auto 260px!important;gap:12px!important;}
+  #plan-canvas{cursor:default!important;}
+  @page{margin:10mm;size:A4;}
+}
+</style>
+</head>
+<body>
+
+<div id="loader" style="display:none;">
+  <div class="l-t">NORMIES // LEGO BUILDER</div>
+  <div class="l-m" id="l-m">LOADING...</div>
+  <div class="l-bg"><div class="l-f" id="l-f"></div></div>
+</div>
+
+<div class="page">
+
+  <div id="topbar">
+    <div class="logo">⬡ NORMIES // LEGO BUILDER</div>
+    <div class="tsep"></div>
+    <div class="tag">TURN YOUR NORMIE INTO A LEGO BUILD</div>
+    <div class="tright">
+      <button class="hbtn outline" onclick="downloadPDF()">↓ PDF</button>
+    </div>
+  </div>
+
+  <div id="input-bar">
+    <div class="ib-l">ENTER YOUR NORMIE ID</div>
+    <input type="number" id="nft-input" min="0" max="9999" placeholder="e.g.  42">
+    <button id="build-btn" onclick="build()">BUILD ▶</button>
+    <div id="st"></div>
+  </div>
+
+  <div id="main">
+    <div id="empty">
+      <div class="em-icon">⬡</div>
+      <div class="em-t">READY TO BUILD</div>
+      <div class="em-s">
+        ENTER A NORMIE ID ABOVE<br>
+        WE'LL CALCULATE YOUR PIECES AND GENERATE A BUILD PLAN
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API='https://api.normies.art/normie';
+
+// ── Vraies couleurs Normies (API: pixel 1 = #48494b, pixel 0 = #e3e5e4) ──
+const DARK  = {key:'dark',  name:'Dark Gray',  hex:'#48494b', rim:'#2a2b2c', stud:'#3a3b3d'};
+const LIGHT = {key:'light', name:'Light Gray', hex:'#d6d8d7', rim:'#b0b2b1', stud:'#c4c6c5'};
+
+// ── LEGO piece sizes — biggest first ──
+const SIZES=[
+  {w:4,h:2},{w:2,h:4},{w:3,h:2},{w:2,h:3},{w:2,h:2},
+  {w:4,h:1},{w:1,h:4},{w:3,h:1},{w:1,h:3},
+  {w:2,h:1},{w:1,h:2},{w:1,h:1}
+];
+
+
+
+// ── Optimize ──
+function optimize(grid){
+  const pieces=[];
+  for(const [colorVal,col] of [[1,DARK],[0,LIGHT]]){
+    const used=Array.from({length:40},()=>new Uint8Array(40));
+    for(let y=0;y<40;y++){
+      for(let x=0;x<40;x++){
+        if(grid[y][x]!==colorVal||used[y][x]) continue;
+        for(const sz of SIZES){
+          if(x+sz.w>40||y+sz.h>40) continue;
+          let ok=true;
+          outer:for(let dy=0;dy<sz.h;dy++)
+            for(let dx=0;dx<sz.w;dx++)
+              if(grid[y+dy][x+dx]!==colorVal||used[y+dy][x+dx]){ok=false;break outer;}
+          if(!ok) continue;
+          for(let dy=0;dy<sz.h;dy++) for(let dx=0;dx<sz.w;dx++) used[y+dy][x+dx]=1;
+          pieces.push({x,y,w:sz.w,h:sz.h,c:col});
+          break;
+        }
+      }
+    }
+  }
+  return pieces;
+}
+
+function summarize(pieces){
+  const map={};
+  for(const p of pieces){
+    const [a,b]=[Math.min(p.w,p.h),Math.max(p.w,p.h)];
+    const lbl=`${a}x${b}`;
+    const k=`${p.c.key}|${lbl}`;
+    if(!map[k]) map[k]={c:p.c,lbl,a,b,count:0};
+    map[k].count++;
+  }
+  return Object.values(map).sort((x,y)=>x.c.key!==y.c.key?(x.c.key==='dark'?-1:1):(y.a*y.b-x.a*x.b));
+}
+
+// ── Draw plan ──
+function drawPlan(pieces, S=16){
+  const cv=document.createElement('canvas');
+  cv.width=40*S+1; cv.height=40*S+1;
+  const ctx=cv.getContext('2d');
+
+  ctx.fillStyle='#f0f2f1';
+  ctx.fillRect(0,0,cv.width,cv.height);
+
+  for(const p of pieces){
+    const px=p.x*S, py=p.y*S, pw=p.w*S, ph=p.h*S;
+    const c=p.c;
+
+    ctx.fillStyle='rgba(0,0,0,.10)';
+    ctx.fillRect(px+2,py+2,pw,ph);
+
+    ctx.fillStyle=c.hex;
+    ctx.fillRect(px,py,pw,ph);
+
+    ctx.fillStyle='rgba(255,255,255,.18)';
+    ctx.fillRect(px,py,pw,3);
+    ctx.fillRect(px,py,3,ph);
+
+    ctx.fillStyle='rgba(0,0,0,.2)';
+    ctx.fillRect(px,py+ph-3,pw,3);
+    ctx.fillRect(px+pw-3,py,3,ph);
+
+    for(let dy=0;dy<p.h;dy++){
+      for(let dx=0;dx<p.w;dx++){
+        const cx=px+dx*S+S/2, cy=py+dy*S+S/2, r=S*.28;
+        ctx.fillStyle=c.stud;
+        ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle=c.rim;ctx.lineWidth=S*.05;
+        ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+        ctx.fillStyle='rgba(255,255,255,.2)';
+        ctx.beginPath();ctx.arc(cx-r*.3,cy-r*.3,r*.3,0,Math.PI*2);ctx.fill();
+      }
+    }
+
+    ctx.strokeStyle='rgba(0,0,0,.55)';
+    ctx.lineWidth=S>=14?2:1.5;
+    ctx.strokeRect(px+.5,py+.5,pw-1,ph-1);
+
+
+  }
+
+  ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=.5;
+  for(let i=0;i<=40;i++){
+    ctx.beginPath();ctx.moveTo(i*S,0);ctx.lineTo(i*S,40*S);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,i*S);ctx.lineTo(40*S,i*S);ctx.stroke();
+  }
+
+  ctx.fillStyle='#7a7c7c';
+  ctx.font=`${Math.max(7,S*.38)}px "Share Tech Mono",monospace`;
+  ctx.textAlign='left';ctx.textBaseline='middle';
+  for(let y=0;y<40;y++){
+    if(y%5===0||y===39){
+      ctx.fillText(String(y+1).padStart(2,' '),40*S+3,y*S+S/2);
+    }
+  }
+
+  return cv;
+}
+
+// ── Draw piece preview (inventory) ──
+function drawPiecePreview(c, a, b, scale=12){
+  const cv=document.createElement('canvas');
+  const W=b*scale, H=a*scale;
+  cv.width=W+2;cv.height=H+2;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle=c.hex;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,255,255,.16)';ctx.fillRect(0,0,W,2);ctx.fillRect(0,0,2,H);
+  ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(0,H-2,W,2);ctx.fillRect(W-2,0,2,H);
+  for(let dy=0;dy<a;dy++){
+    for(let dx=0;dx<b;dx++){
+      const cx=dx*scale+scale/2, cy=dy*scale+scale/2, r=scale*.28;
+      ctx.fillStyle=c.stud;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle=c.rim;ctx.lineWidth=scale*.06;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    }
+  }
+  ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=1.5;ctx.strokeRect(.5,.5,W-1,H-1);
+  return cv;
+}
+
+// ── BUILD ──
+let curId=null,curPieces=null,curSummary=null;
+
+async function build(){
+  const raw=document.getElementById('nft-input').value;
+  const id=parseInt(raw);
+  if(isNaN(id)||id<0||id>9999){setSt('INVALID ID');return;}
+
+  showL('FETCHING NORMIE #'+String(id).padStart(4,'0')+'...',10);
+
+  let pixels,traits;
+  try{
+    const [pR,tR]=await Promise.all([fetch(`${API}/${id}/pixels`),fetch(`${API}/${id}/traits`)]);
+    pixels=(await pR.text()).trim();
+    traits=await tR.json();
+  }catch(e){hideL();setSt('ERROR: '+e.message);return;}
+
+  setL('OPTIMIZING PIECES...',55);await sleep(10);
+
+  const grid=[];
+  for(let y=0;y<40;y++){grid.push([]);for(let x=0;x<40;x++) grid[y].push(parseInt(pixels[y*40+x]));}
+
+  const pieces=optimize(grid);
+  const summary=summarize(pieces);
+  const darkPx=pixels.split('').filter(c=>c==='1').length;
+
+  curId=id;curPieces=pieces;curSummary=summary;
+
+  setL('DRAWING PLAN...',80);await sleep(10);
+  const planCv=drawPlan(pieces,16);
+
+  setL('READY',100);await sleep(150);
+  hideL();setSt('');
+
+  renderUI(id,traits,pieces,summary,planCv,darkPx);
+}
+
+function renderUI(id,traits,pieces,summary,planCv,darkPx){
+  const g=t=>(traits.attributes||[]).find(a=>a.trait_type===t)?.value||'—';
+  const lPx=1600-darkPx;
+  const dPcs=pieces.filter(p=>p.c.key==='dark').length;
+  const lPcs=pieces.length-dPcs;
+
+  document.getElementById('main').innerHTML=`
+  <div class="layout">
+
+    <!-- PLAN -->
+    <div class="plan-card">
+      <div class="plan-header">
+        <div class="plan-title">⬡ BUILD PLAN — NORMIE #${String(id).padStart(4,'0')}</div>
+        <div class="plan-hint">CLICK TO ZOOM</div>
+      </div>
+      <div id="plan-wrap">
+        <canvas id="plan-canvas" onclick="toggleZoom(this)"></canvas>
+      </div>
+    </div>
+
+    <!-- SIDE -->
+    <div class="side">
+
+      <!-- Normie -->
+      <div class="normie-card">
+        <img id="preview-img" src="${API}/${id}/image.png" alt="">
+        <div class="nc-info">
+          <div class="nc-id">NORMIE #${String(id).padStart(4,'0')}</div>
+          <div class="nc-row"><b>${g('Type')}</b> · ${g('Age')} · ${g('Gender')}</div>
+          <div class="nc-row">${g('Hair Style')}</div>
+          <div class="nc-row">${g('Eyes')} · ${g('Expression')}</div>
+          ${g('Accessory')!=='—'?`<div class="nc-row">${g('Accessory')}</div>`:''}
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="sc"><div class="sc-l">PIECES</div><div class="sc-v">${pieces.length}</div><div class="sc-s">TOTAL</div></div>
+        <div class="sc"><div class="sc-l">STUDS</div><div class="sc-v">1600</div><div class="sc-s">40×40</div></div>
+        <div class="sc"><div class="sc-l">DARK</div><div class="sc-v">${dPcs}</div><div class="sc-s">${darkPx} PX</div></div>
+        <div class="sc"><div class="sc-l">LIGHT</div><div class="sc-v">${lPcs}</div><div class="sc-s">${lPx} PX</div></div>
+      </div>
+
+      <!-- Inventory -->
+      <div class="inv-card">
+        <div class="inv-header">
+          <div class="inv-title">⬡ PIECE INVENTORY</div>
+          <div class="inv-total">${pieces.length} PIECES</div>
+        </div>
+        <div id="inv-grid"></div>
+      </div>
+
+
+
+    </div>
+  </div>`;
+
+  const target=document.getElementById('plan-canvas');
+  target.width=planCv.width;target.height=planCv.height;
+  target.style.width=planCv.width+'px';target.style.height=planCv.height+'px';
+  target.getContext('2d').drawImage(planCv,0,0);
+
+  buildInvGrid(summary);
+
+}
+
+function toggleZoom(cv){
+  cv._zoomed=!cv._zoomed;
+  cv.style.transform=cv._zoomed?'scale(1.8)':'scale(1)';
+  cv.style.cursor=cv._zoomed?'zoom-out':'zoom-in';
+}
+
+// ── Inventory ──
+function buildInvGrid(summary){
+  const grid=document.getElementById('inv-grid');
+  grid.innerHTML='';
+
+  for(const colorKey of ['dark','light']){
+    const grp=summary.filter(g=>g.c.key===colorKey);
+    if(!grp.length) continue;
+
+    const col=colorKey==='dark'?DARK:LIGHT;
+    const total=grp.reduce((s,g)=>s+g.count,0);
+
+    const hdr=document.createElement('div');
+    hdr.style.cssText=`
+      grid-column:1/-1;
+      display:flex;align-items:center;gap:8px;
+      padding:7px 10px;
+      background:${col.hex};
+      border-top:1px solid ${col.rim};
+      font-size:8px;letter-spacing:.2em;
+      color:${colorKey==='dark'?'#ddd':'#2a2a2a'};
+    `;
+    hdr.innerHTML=`
+      <span style="width:9px;height:9px;border-radius:50%;background:${col.stud};display:inline-block;border:1px solid ${col.rim};"></span>
+      ${col.name.toUpperCase()} — ${total} PCS
+    `;
+    grid.appendChild(hdr);
+
+    for(const g of grp){
+      const item=document.createElement('div');
+      item.className='inv-item';
+
+      const previewCv=drawPiecePreview(g.c,g.a,g.b,12);
+      item.appendChild(previewCv);
+
+      const lbl=document.createElement('div');
+      lbl.className='inv-lbl';
+      lbl.innerHTML=`PLATE <b>${g.lbl.toUpperCase()}</b>`;
+      item.appendChild(lbl);
+
+      const qty=document.createElement('div');
+      qty.className='inv-qty';
+      qty.textContent='×'+g.count;
+      item.appendChild(qty);
+
+      grid.appendChild(item);
+    }
+  }
+}
+
+// ── BrickLink — sans colonne gauche inutile ──
+
+
+// ── Download PDF ──
+function downloadPDF(){
+  const cv=document.getElementById('plan-canvas');
+  if(!cv){return;}
+  const imgData=cv.toDataURL('image/png');
+  const w=cv.width, h=cv.height;
+  // A4 landscape if wider than tall, else portrait
+  const orient=w>=h?'landscape':'portrait';
+  const script=document.createElement('script');
+  script.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  script.onload=function(){
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:orient,unit:'px',format:[w+60,h+80]});
+    pdf.addImage(imgData,'PNG',30,50,w,h);
+    pdf.setFontSize(9);
+    pdf.setTextColor(100);
+    pdf.text(`NORMIES // LEGO BUILDER — NORMIE #${String(curId).padStart(4,'0')}`,30,30);
+    pdf.save(`normie-${String(curId).padStart(4,'0')}-plan.pdf`);
+  };
+  document.head.appendChild(script);
+}
+
+// ── Utils ──
+function showL(msg,pct){const l=document.getElementById('loader');l.style.display='flex';l.style.opacity='1';setL(msg,pct);}
+function hideL(){const l=document.getElementById('loader');l.style.opacity='0';setTimeout(()=>l.style.display='none',300);}
+function setL(msg,pct){document.getElementById('l-m').textContent=msg;document.getElementById('l-f').style.width=pct+'%';}
+function setSt(m){document.getElementById('st').textContent=m?'■ '+m:'';}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+document.getElementById('nft-input').addEventListener('keydown',e=>{if(e.key==='Enter')build();});
+</script>
+</body>
+</html>
