@@ -499,9 +499,9 @@ function renderUI(id,traits,pieces,summary,planCv,darkPx){
         </div>
         <div style="padding:14px;display:flex;flex-direction:column;gap:10px;">
           <div style="font-size:8px;letter-spacing:.12em;color:var(--dim);line-height:1.9;">
-            1. CLIQUE SUR COPIER<br>
-            2. VA SUR <b style="color:var(--text)">BRICKLINK.COM → WANTED LIST → UPLOAD</b><br>
-            3. ONGLET "UPLOAD BRICKLINK XML FORMAT" → COLLE → DONE
+            1. CLICK COPY BELOW<br>
+            2. GO TO <b style="color:var(--text)">BRICKLINK.COM → WANTED LIST → UPLOAD</b><br>
+            3. TAB "UPLOAD BRICKLINK XML FORMAT" → PASTE → DONE
           </div>
           <button onclick="exportBrickLink(this)" style="
             background:var(--on);border:none;color:var(--bg);
@@ -639,7 +639,7 @@ function exportBrickLink(btn){
     const b=btn||document.querySelector('.hbtn[onclick="exportBrickLink()"]');
     if(!b) return;
     const orig=b.textContent;
-    b.textContent='✓ COPIÉ — COLLE SUR BRICKLINK !';
+    b.textContent='✓ COPIED — PASTE ON BRICKLINK!';
     b.style.background='#2a7a2a';
     setTimeout(()=>{b.textContent=orig;b.style.background='var(--on)';},3000);
   });
